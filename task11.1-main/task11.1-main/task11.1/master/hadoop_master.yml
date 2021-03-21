@@ -1,0 +1,36 @@
+- hosts: master
+  vars:
+  - port_no: 9001
+  - master_dir: "/root/nn"
+
+  tasks:
+
+  - name: configuring hdfs-site.xml file
+    template:
+      src: "/root/master/hdfs-site.xml"
+      dest: "/etc/hadoop/hdfs-site.xml"
+
+  - name: configuring core-site.xml file
+    template:
+      src: "/root/master/core-site.xml"
+      dest: "/etc/hadoop/core-site.xml"
+  
+  - name: creating namenode directory
+    file:
+      path: "{{master_dir}}"
+      state: directory
+
+  - name: formatting the namenode directory
+    shell: "hadoop namenode -format"
+   
+  - name: enabling firewall for port
+    firewalld:
+      port: "{{port_no}}"
+      permanent: yes
+      state: enabled  
+
+  - name: starting master service
+    service:
+      name: "hadoop-namenode.service"
+      state: started
+  

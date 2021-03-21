@@ -1,0 +1,21 @@
+- hosts: slave
+  vars:
+  - master_ip: "192.168.1."
+  - slave_dir: "/root/dn"
+
+  tasks:
+  - name: configuring hdfs-site.xml file
+    template:
+      src: "/root/slave/hdfs-site.xml"
+      dest: "/etc/hadoop/hdfs-site.xml"
+
+  - name: configuring core-site.xml file
+    template:
+      src: "/root/slave/core-site.xml"
+      dest: "/etc/hadoop/core-site.xml"
+
+  - name: starting slave service
+    service:
+      name: "hadoop-datanode.service"
+      state: started
+
